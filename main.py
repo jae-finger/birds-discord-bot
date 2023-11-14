@@ -11,6 +11,7 @@ BIRB_RESCUE_TOKEN = str(os.getenv('BIRB_DISCORD_TOKEN'))
 intents = discord.Intents.default()
 intents.message_content = True
 
+# TODO: Update this description
 description = '''Rescue the birds bot!!!!'''
 
 # client = discord.Client(intents=intents, command_prefix='?')
