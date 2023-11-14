@@ -25,5 +25,7 @@ async def on_ready():
 @bot.command()
 async def hello(ctx):
     await ctx.send('Ahoy!')
+    
+bot.load_extension('cogs.welcome_cog')
 
 bot.run(token=BIRB_RESCUE_TOKEN)
