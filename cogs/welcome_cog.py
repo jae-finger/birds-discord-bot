@@ -5,7 +5,7 @@ class WelcomeCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def check_first_join(self, member_id, file_path='members.txt'):
+    def check_first_join(self, member_id, file_path='data/members.txt'):
         with open(file_path, 'a+') as file:
             file.seek(0)
             members = file.read().splitlines()
