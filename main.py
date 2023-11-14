@@ -20,6 +20,7 @@ bot = commands.Bot(command_prefix='?', description=description, intents=intents)
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+    print('--------------------------------')
 
 @bot.command()
 async def hello(ctx):
