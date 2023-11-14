@@ -22,3 +22,5 @@ async def hello(ctx):
 
 # Run the bot
 bot.run(BIRB_RESCUE_TOKEN)
+intents = discord.Intents.default()
+intents.members = True
