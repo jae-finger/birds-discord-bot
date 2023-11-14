@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 
 # ENV variables
 load_dotenv()
-BIRB_RESCUE_TOKEN = os.getenv('BIRB_RESCUE_TOKEN')
+
+BIRB_RESCUE_TOKEN = str(os.getenv('BIRB_DISCORD_TOKEN'))
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -24,4 +25,4 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
-client.run(BIRB_RESCUE_TOKEN)
+client.run(token=BIRB_RESCUE_TOKEN)
