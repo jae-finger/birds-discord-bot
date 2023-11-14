@@ -26,10 +26,12 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
     print('--------------------------------')
 
+for extension in ['cogs.welcome_cog']:
+    bot.load_extension(extension)
+    # bot.load_extension('cogs.welcome_cog')
+
 @bot.command()
 async def hello(ctx):
     await ctx.send('Ahoy!')
-
-bot.load_extension('cogs.welcome_cog')
 
 bot.run(token=BIRB_RESCUE_TOKEN)
