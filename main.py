@@ -30,9 +30,6 @@ async def on_ready():
 async def hello(ctx):
     await ctx.send('Ahoy!')
 
-initial_extensions = ['cogs.welcome_cog']
-
-for extension in initial_extensions:
-    bot.load_extension(extension)
+bot.load_extension('cogs.welcome_cog')
 
 bot.run(token=BIRB_RESCUE_TOKEN)
