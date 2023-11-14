@@ -14,15 +14,25 @@ intents.message_content = True
 # TODO: Update this description
 description = '''Rescue the birds bot!!!!'''
 
-# client = discord.Client(intents=intents, command_prefix='?')
-bot = commands.Bot(command_prefix='?', description=description, intents=intents)
+# Change only the no_category default string
+help_command = commands.DefaultHelpCommand(
+    no_category = 'Commands'
+)
+
+bot = commands.Bot(command_prefix='?', description=description, intents=intents, help_command = help_command)
 
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+    print('--------------------------------')
 
 @bot.command()
 async def hello(ctx):
     await ctx.send('Ahoy!')
+
+initial_extensions = ['cogs.welcome_cog']
+
+for extension in initial_extensions:
+    bot.load_extension(extension)
 
 bot.run(token=BIRB_RESCUE_TOKEN)
