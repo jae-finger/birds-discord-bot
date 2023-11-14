@@ -11,14 +11,17 @@ BIRB_RESCUE_TOKEN = str(os.getenv('BIRB_DISCORD_TOKEN'))
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents=intents, command_prefix='?')
+description = '''Rescue the birds bot!!!!'''
 
-@client.event
+# client = discord.Client(intents=intents, command_prefix='?')
+bot = commands.Bot(command_prefix='?', description=description, intents=intents)
+
+@bot.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+    print(f'We have logged in as {bot.user}')
 
-@client.command()
+@bot.command()
 async def hello(ctx):
     await ctx.send('Ahoy!')
 
-client.run(token=BIRB_RESCUE_TOKEN)
+bot.run(token=BIRB_RESCUE_TOKEN)
