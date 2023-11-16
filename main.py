@@ -66,6 +66,7 @@ async def on_member_join(member):
 @bot.command(description="Say hello to the bot")
 async def hello(ctx):
     hello_message = f'''Ahoy, {ctx.author.name}! to Rescue the Birds!\n Please take a chance to look around. If you have any questions, please ping Jon!'''
+    await ctx.send(hello_message)
 
 # Source Code
 @bot.command(description="")

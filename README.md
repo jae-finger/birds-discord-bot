@@ -9,7 +9,6 @@ RescueTheBirds! is a Discord bot designed for the save-the-birds project. It enh
   - [Table of Contents](#table-of-contents)
   - [Installation and Setup](#installation-and-setup)
   - [Usage](#usage)
-    - [Testing](#testing)
 
 ## Installation and Setup
 1. Clone the repository:
@@ -25,9 +24,6 @@ After installation, run the bot with:
 docker build -t discord-bot .
 docker run -e BIRB_DISCORD_TOKEN='XXXXXXXXXXX' discord-bot
 ```
-
-### Testing
-`python -m unittest discover -s tests`
-
 Commands:
 - `?hello`: Responds with "Ahoy!"
+- `source_code`: Links to source code
