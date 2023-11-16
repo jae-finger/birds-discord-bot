@@ -23,6 +23,7 @@ After installation, run the bot with:
 ```bash
 docker build -t discord-bot .
 docker run -e BIRB_DISCORD_TOKEN='XXXXXXXXXXX' discord-bot
+docker run --env-file .env --name bird-bot bird-bot
 ```
 Commands:
 - `?hello`: Responds with "Ahoy!"
