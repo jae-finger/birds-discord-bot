@@ -65,7 +65,12 @@ async def on_member_join(member):
 # Hello Command
 @bot.command(description="Say hello to the bot")
 async def hello(ctx):
-    hello_embed = discord.Embed(title="Hello!", description=f"Ahoy!, {ctx.message.author.display_name}. This is Jon's Rescue the Birds! discord bot. Check out the source code!", url="https://github.com/jae-finger/birds-discord-bot")
+    hello_message = f'''Ahoy, {ctx.author.name}! to Rescue the Birds!\n Please take a chance to look around. If you have any questions, please ping Jon!'''
+
+# Source Code
+@bot.command(description="")
+async def source_code(ctx):
+    hello_embed = discord.Embed(title="Source Code!", description=f"Thanks for your interest in the Bird Bot. Check out the source code!", url="https://github.com/jae-finger/birds-discord-bot")
     await ctx.send(embed=hello_embed)
 
 bot.run(token=BIRB_RESCUE_TOKEN)
