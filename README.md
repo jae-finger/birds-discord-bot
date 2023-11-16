@@ -48,8 +48,7 @@ docker build -t bird-bot .
 
 ### Running the Docker Container
 ```
-docker run -e BIRB_DISCORD_TOKEN=XXXX --name bird-bot bird-bot
-
+ docker run --name bird-bot bird-bot
 ```
 
 ## 🤖 Commands List
