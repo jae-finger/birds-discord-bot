@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
+import utils
 
 # ENV variables
 load_dotenv()
@@ -23,18 +24,6 @@ class SimpleHelpCommand(commands.HelpCommand):
         help_message = discord.Embed(title="Help! Jon's Rescue the Birds Bot", description=f"Please ping Jon with any questions or kudos :]\n```commands:\n- ?hello - say hi to the bot\n- ?help - this help menu\n- ?source_code - link to bot source code\n```")
         channel = self.get_destination()
         await channel.send(embed=help_message)
-
-# Helper Functions TODO: Put these in a utility folder
-# Function to check if a member's ID is in the file
-def is_member_greeted(member_id):
-    with open('data/greeted_members.txt', 'r') as file:
-        greeted_members = file.read().splitlines()
-    return str(member_id) in greeted_members
-
-# Function to add a member's ID to the file
-def add_greeted_member(member_id):
-    with open('data/greeted_members.txt', 'a') as file:
-        file.write(f'{member_id}\n')
 
 # Set the bot's permissions
 intents = discord.Intents.default()
@@ -63,18 +52,18 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    if not is_member_greeted(member.id):
+    if not utils.is_member_greeted(member.id):
         general_channel = bot.get_channel(GENERAL_CHANNEL_ID)
         if general_channel is not None:
-            welcome_message = f'''Welcome {member.mention} to Rescue the Birds!\n We hope you're ready to help some birds! Please take a look around and introduce yourself!'''
+            welcome_message = f"Welcome to Rescue the Birds, {member.mention}!\n We hope you're ready to help some birds🦜 Please take a look around and introduce yourself! More information about the bot can be foiund by typing: `?help`"
             await general_channel.send(welcome_message)
-            add_greeted_member(member.id)
+            utils.add_greeted_member(member.id)
 
 # Commands
 # Hello Command
 @bot.command(description="!")
 async def hello(ctx):
-    hello_message = f'''Ahoy, {ctx.author.name}! This discord bot was created by: <@{DEFAULT_DISCORD_ID}>. If you have any questions or kudos then ping him :)"'''
+    hello_message = f"Ahoy, {ctx.author.name}! This discord bot was created by: <@{DEFAULT_DISCORD_ID}>. It uses python3.11 and runs on a raspberrypi 4. Find out more about the bot by typing: `?help`"
     await ctx.send(hello_message)
 
 # Source Code
