@@ -71,7 +71,7 @@ async def hello(ctx):
 # Source Code
 @bot.command(description="")
 async def source_code(ctx):
-    hello_embed = discord.Embed(title="Source Code!", description=f"Thanks for your interest in the Bird Bot. Check out the source code!", url="https://github.com/jae-finger/birds-discord-bot")
+    hello_embed = discord.Embed(title="Source Code!", description=f"Thanks for your interest in the Bird Bot. Check out the source code on hithub :)", url="https://github.com/jae-finger/birds-discord-bot")
     await ctx.send(embed=hello_embed)
 
 bot.run(token=BIRB_RESCUE_TOKEN)
