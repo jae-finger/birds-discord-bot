@@ -69,7 +69,7 @@ async def hello(ctx):
     await ctx.send(hello_message)
 
 # Source Code
-@bot.command(description="")
+@bot.command(description="View the source code for the bot")
 async def source_code(ctx):
     hello_embed = discord.Embed(title="Source Code!", description=f"Thanks for your interest in the Bird Bot. Check out the source code on hithub :)", url="https://github.com/jae-finger/birds-discord-bot")
     await ctx.send(embed=hello_embed)
