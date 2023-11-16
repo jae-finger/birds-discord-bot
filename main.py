@@ -56,6 +56,7 @@ bot = commands.Bot(
 # On Ready Event
 @bot.event
 async def on_ready():
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="CAW!"))
     print(f'We have logged in as {bot.user}')
     print(f'General Channel ID: {GENERAL_CHANNEL_ID}')
     print('--------------------------------')
