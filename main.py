@@ -55,7 +55,7 @@ async def on_member_join(member):
     if not utils.is_member_greeted(member.id):
         general_channel = bot.get_channel(GENERAL_CHANNEL_ID)
         if general_channel is not None:
-            welcome_message = f'''Welcome {member.mention} to Rescue the Birds!\n We hope you're ready to help some birds! Please take a look around and introduce yourself!'''
+            welcome_message = f"Welcome to Rescue the Birds, {member.mention}!\n We hope you're ready to help some birds🦜 Please take a look around and introduce yourself! More information about the bot can be foiund by typing: `?help`"
             await general_channel.send(welcome_message)
             utils.add_greeted_member(member.id)
 
@@ -63,7 +63,7 @@ async def on_member_join(member):
 # Hello Command
 @bot.command(description="!")
 async def hello(ctx):
-    hello_message = f'''Ahoy, {ctx.author.name}! This discord bot was created by: <@{DEFAULT_DISCORD_ID}>. If you have any questions or kudos then ping him :)"'''
+    hello_message = f"Ahoy, {ctx.author.name}! This discord bot was created by: <@{DEFAULT_DISCORD_ID}>. It uses python3.11 and runs on a raspberrypi 4. Find out more about the bot by typing: `?help`"
     await ctx.send(hello_message)
 
 # Source Code
