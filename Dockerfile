@@ -13,8 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Make port 80 available to the world outside this container
 EXPOSE 80
 
-# Set default value for the environment variable (overridden by .env file)
-ENV BIRB_DISCORD_TOKEN=default_key
-
 # Run main.py when the container launches
 CMD ["python", "./main.py"]

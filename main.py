@@ -37,7 +37,6 @@ bot = commands.Bot(
     command_prefix='?',
     description='''Jon's Rescue the Birds! discord bot. Please ping him with any questions or kudos!''',
     intents=intents,
-    # help_command=commands.DefaultHelpCommand(no_category = 'Misc', sort_commands=True)
     help_command=SimpleHelpCommand(no_category = 'Misc', sort_commands=True)
 )
 
