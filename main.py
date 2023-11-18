@@ -72,4 +72,22 @@ async def source_code(ctx):
     hello_embed.set_image(url="https://raw.githubusercontent.com/jae-finger/birds-discord-bot/main/data/birb_logo_dalle.png")
     await ctx.send(embed=hello_embed)
 
-bot.run(token=BIRB_RESCUE_TOKEN)
+# Meetings commands
+@bot.command()
+async def list_meetings(ctx):
+    # check that the userid == DEFAULT_DISCORD_ID
+    if ctx.message.author.id == DEFAULT_DISCORD_ID:
+        # if so, then list all meetings
+        meeting_list = "No meetings, yet!"
+        await ctx.send(meeting_list)
+
+@bot.command()
+async def add_meeting(ctx):
+    # check that the userid == DEFAULT_DISCORD_ID
+    if ctx.message.author.id == DEFAULT_DISCORD_ID:
+        # if so, then add a meeting
+        await ctx.send("Added a meeting!")
+
+if __name__ == '__main__':
+    # Run the bot
+    bot.run(token=BIRB_RESCUE_TOKEN)
