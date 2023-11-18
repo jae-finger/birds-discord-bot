@@ -8,12 +8,13 @@ RescueTheBirds! 🚀 is a Discord bot designed for the save-the-birds project. I
 - [🦜 RescueTheBirds! Discord Bot](#-rescuethebirds-discord-bot)
   - [📝 Description](#-description)
   - [📚 Table of Contents](#-table-of-contents)
-  - [🛠️ Installation and Setup](#%EF%B8%8F-installation-and-setup)
-  - [💻 Using the Bot](#-using-the-bot)
+  - [🛠️ Installation and Setup](#️-installation-and-setup)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
   - [🐳 Docker Support](#-docker-support)
+    - [Building the Docker Image](#building-the-docker-image)
+    - [Running the Docker Container](#running-the-docker-container)
   - [🤖 Commands List](#-commands-list)
-  - [🙋‍♂️ Contributing](#%EF%B8%8F-contributing)
-  - [📄 License](#-license)
 
 ## 🛠️ Installation and Setup
 Here's how you get RescueTheBirds! up and running on your server.
@@ -59,5 +60,3 @@ Commands:
 - ?hello: Responds with "Ahoy!"
 - ?source_code: Links to source code
 ```
-
-
