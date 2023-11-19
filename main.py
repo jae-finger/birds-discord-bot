@@ -1,10 +1,9 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import os
 from dotenv import load_dotenv
 import utils
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta, timezone
 
 # ENV variables
 load_dotenv()
@@ -34,7 +33,6 @@ intents.message_content = True
 intents.members = True
 intents.guilds = True
 
-
 # Create the bot
 bot = commands.Bot(
     command_prefix='?',
@@ -42,6 +40,11 @@ bot = commands.Bot(
     intents=intents,
     help_command=SimpleHelpCommand(no_category = 'Misc', sort_commands=True)
 )
+
+# load cogs
+async def setup():
+    await bot.load_extension('event_reminder_cog')
+
 
 # Events
 # On Ready Event
@@ -51,6 +54,7 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
     print(f'General Channel ID: {GENERAL_CHANNEL_ID}')
     print('--------------------------------')
+    event_check.start()
 
 @bot.event
 async def on_member_join(member):
@@ -75,6 +79,43 @@ async def source_code(ctx):
     hello_embed.set_image(url="https://raw.githubusercontent.com/jae-finger/birds-discord-bot/main/data/birb_logo_dalle.png")
     await ctx.send(embed=hello_embed)
 
+
+# Meetings
+async def check_next_event(bot):
+    guild = bot.get_guild(DISCORD_GUILD_ID)  # Replace with your guild ID
+    if guild:
+        next_event = await get_next_event(guild)  # Ensure this is an async function
+        if next_event:
+            time_until_event = next_event.start_time - datetime.now(timezone.utc)
+            if time_until_event <= timedelta(hours=1):
+                channel = bot.get_channel(GENERAL_CHANNEL_ID)
+                if channel:
+                    await channel.send(f"Reminder: '{next_event.name}' is happening in less than an hour!")
+                else:
+                    print(f"Unable to find channel with ID: {GENERAL_CHANNEL_ID}")
+            else:
+                print(f"Found an upcoming event: '{next_event.name}'. Will announce 1 hour before the event.")
+        else:
+            print("No upcoming events found at this time.")
+
+async def get_next_event(guild):
+    # Fetch the list of scheduled events for the guild
+    events = await guild.fetch_scheduled_events()
+
+    # Filter out events that have already started
+    future_events = [event for event in events if event.start_time > datetime.now(timezone.utc)]
+
+    # Sort them by start time
+    future_events.sort(key=lambda x: x.start_time)
+
+    # Return the next event or None if there are no future events
+    return future_events[0] if future_events else None
+
+
+@tasks.loop(minutes=60)
+async def event_check():
+    await check_next_event(bot)
+
 @bot.command()
 async def list_meetings(ctx):
     if ctx.message.author.id == DEFAULT_DISCORD_ID:
@@ -92,31 +133,33 @@ async def list_meetings(ctx):
         event_list = '\n'.join([f'{event.name} - {event.start_time.strftime("%Y-%m-%d %H:%M")}' for event in events])
         await ctx.send(f'Scheduled Events:\n{event_list}')
 
-
-
 @bot.command()
 async def add_meeting(ctx, name: str, start_time_str: str, end_time_str: str, description: str = None, location: str = None):
-    # Replace with your Discord ID or another method to check user permissions
     if ctx.message.author.id == DEFAULT_DISCORD_ID:
-        # Get the guild using the preloaded DISCORD_GUILD_ID
         guild = bot.get_guild(DISCORD_GUILD_ID)
         if not guild:
             await ctx.send('Guild not found.')
             return
 
-        # Define the CST timezone
-        cst_timezone = ZoneInfo("America/Chicago")
-
         # Define the format for date and time input
         dt_format = "%Y-%m-%d %H:%M"
 
-        # Convert start_time_str and end_time_str from string to CST-aware datetime object
         try:
-            start_time = datetime.strptime(start_time_str, dt_format).replace(tzinfo=cst_timezone)
-            end_time = datetime.strptime(end_time_str, dt_format).replace(tzinfo=cst_timezone)
+            # Convert start_time_str and end_time_str from string to UTC datetime object
+            start_time_utc = datetime.strptime(start_time_str, dt_format)
+            end_time_utc = datetime.strptime(end_time_str, dt_format)
+
+            # Convert the datetime objects to UTC timezone-aware datetime objects
+            utc_timezone = timezone.utc
+            start_time_aware = start_time_utc.replace(tzinfo=utc_timezone)
+            end_time_aware = end_time_utc.replace(tzinfo=utc_timezone)
+
+            # Adjust the time to CST by subtracting 6 hours (UTC-6)
+            start_time_cst = start_time_aware - timedelta(hours=6)
+            end_time_cst = end_time_aware - timedelta(hours=6)
 
             # Ensure start time is in the future
-            if start_time < datetime.now(cst_timezone):
+            if start_time_cst < datetime.now(utc_timezone) - timedelta(hours=6):
                 raise ValueError("Start time must be in the future.")
 
         except ValueError as e:
@@ -124,16 +167,16 @@ async def add_meeting(ctx, name: str, start_time_str: str, end_time_str: str, de
             return
 
         # Create the scheduled event
-        # image_url = "http://example.com/image.jpg"
+        image_url = "https://raw.githubusercontent.com/jae-finger/birds-discord-bot/main/data/birb_logo_dalle.png"
         event = await guild.create_scheduled_event(
             name=name, 
-            start_time=start_time, 
-            end_time=end_time, 
+            start_time=start_time_cst, 
+            end_time=end_time_cst, 
             description=description, 
             location=location, 
             entity_type=discord.EntityType.external,
-            privacy_level = discord.PrivacyLevel.guild_only
-            # image=image_url
+            privacy_level=discord.PrivacyLevel.guild_only,
+            image=image_url
         )
         await ctx.send(f'Event "{name}" created successfully!')
 
@@ -161,7 +204,8 @@ async def announce_next_meeting(ctx):
         return
 
     # Format the announcement message
-    announcement = f"@everyone 🎉📅 Hey everyone! Get ready for our next big event: '{next_event.name}'! It's happening on {next_event.start_time.strftime('%Y-%m-%d at %H:%M CST')}! Be there or be square! 🎊🐦"
+    cst_start_time = next_event.start_time + timedelta(hours=6)
+    announcement = f"Hey @everyone! Just a heads up that our next meeting is: '{next_event.name}' on {cst_start_time.strftime('%Y-%m-%d at %I:%M CST')} 🦜 May your bugs be few and your commits be many 🦜"
 
     # Send the announcement to the general channel
     general_channel = bot.get_channel(GENERAL_CHANNEL_ID)
@@ -170,9 +214,4 @@ async def announce_next_meeting(ctx):
     else:
         await ctx.send('General channel not found.')
 
-
-
-
-if __name__ == '__main__':
-    # Run the bot
-    bot.run(token=BIRB_RESCUE_TOKEN)
+bot.run(token=BIRB_RESCUE_TOKEN)
