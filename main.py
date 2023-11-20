@@ -90,7 +90,7 @@ async def check_next_event(bot):
             if time_until_event <= timedelta(hours=1):
                 channel = bot.get_channel(GENERAL_CHANNEL_ID)
                 if channel:
-                    await channel.send(f"Reminder: '{next_event.name}' is happening in less than an hour!")
+                    await channel.send(f"Reminder @everyone: our {next_event.name} is happening in less than an hour!")
                 else:
                     print(f"Unable to find channel with ID: {GENERAL_CHANNEL_ID}")
             else:
@@ -145,21 +145,27 @@ async def add_meeting(ctx, name: str, start_time_str: str, end_time_str: str, de
         dt_format = "%Y-%m-%d %H:%M"
 
         try:
-            # Convert start_time_str and end_time_str from string to UTC datetime object
-            start_time_utc = datetime.strptime(start_time_str, dt_format)
-            end_time_utc = datetime.strptime(end_time_str, dt_format)
+            # CST timezone offset (UTC-6), adjust for daylight saving if necessary
+            cst_offset = timedelta(hours=-6)
+            # Create a naive datetime object from the input strings
+            start_time_naive = datetime.strptime(start_time_str, dt_format)
+            end_time_naive = datetime.strptime(end_time_str, dt_format)
 
-            # Convert the datetime objects to UTC timezone-aware datetime objects
-            utc_timezone = timezone.utc
-            start_time_aware = start_time_utc.replace(tzinfo=utc_timezone)
-            end_time_aware = end_time_utc.replace(tzinfo=utc_timezone)
+            # Determine if daylight saving time is in effect for the input dates
+            # Adjust the offset to UTC-5 if daylight saving is in effect
+            if start_time_naive.month > 3 and start_time_naive.month < 11:
+                cst_offset = timedelta(hours=-5)  # CDT (Daylight Saving Time)
 
-            # Adjust the time to CST by subtracting 6 hours (UTC-6)
-            start_time_cst = start_time_aware - timedelta(hours=6)
-            end_time_cst = end_time_aware - timedelta(hours=6)
+            # Make the times timezone-aware (CST or CDT)
+            start_time_cst = start_time_naive.replace(tzinfo=timezone(cst_offset))
+            end_time_cst = end_time_naive.replace(tzinfo=timezone(cst_offset))
+
+            # Convert to UTC
+            start_time_utc = start_time_cst.astimezone(timezone.utc)
+            end_time_utc = end_time_cst.astimezone(timezone.utc)
 
             # Ensure start time is in the future
-            if start_time_cst < datetime.now(utc_timezone) - timedelta(hours=6):
+            if start_time_utc < datetime.now(timezone.utc):
                 raise ValueError("Start time must be in the future.")
 
         except ValueError as e:
@@ -167,16 +173,16 @@ async def add_meeting(ctx, name: str, start_time_str: str, end_time_str: str, de
             return
 
         # Create the scheduled event
-        image_url = "https://raw.githubusercontent.com/jae-finger/birds-discord-bot/main/data/birb_logo_dalle.png"
+        # image_url = "https://raw.githubusercontent.com/jae-finger/birds-discord-bot/main/data/birb_logo_dalle.png"
         event = await guild.create_scheduled_event(
             name=name, 
-            start_time=start_time_cst, 
-            end_time=end_time_cst, 
+            start_time=start_time_utc, 
+            end_time=end_time_utc, 
             description=description, 
             location=location, 
             entity_type=discord.EntityType.external,
             privacy_level=discord.PrivacyLevel.guild_only,
-            image=image_url
+            # image=image_url
         )
         await ctx.send(f'Event "{name}" created successfully!')
 
