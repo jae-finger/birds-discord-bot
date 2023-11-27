@@ -66,4 +66,4 @@ Experiment with the bot to discover more hidden features and commands!
 (Note: As the bot continues to evolve, new features and commands will be added. Stay tuned for updates!)
 
 ## 📖 Usage
-After installation, invite RescueTheBirds! to your server and interact with it using the commands. Customize the bot further in the settings file.
+After installation, invite RescueTheBirds! to your server and interact with it using the commands above. Customize your bot further as needed :)
