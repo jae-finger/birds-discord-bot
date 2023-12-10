@@ -211,7 +211,7 @@ async def announce_next_meeting(ctx):
 
     # Format the announcement message
     cst_start_time = next_event.start_time - timedelta(hours=6) 
-    announcement = f"Hey @everyone! Just a heads up that our next meeting is: '{next_event.name}' on {cst_start_time.strftime('%Y-%m-%d at %I:%M CST')} 🦜 May your bugs be few and your commits be many 🦜"
+    announcement = f"Good news, @everyone! Just a heads up that our next meeting is: '{next_event.name}' on {cst_start_time.strftime('%Y-%m-%d at %I:%M CST')} 🦜 May your bugs be few and your commits be many 🦜"
 
     # Send the announcement to the general channel
     general_channel = bot.get_channel(GENERAL_CHANNEL_ID)
