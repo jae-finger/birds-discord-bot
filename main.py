@@ -90,7 +90,7 @@ async def check_next_event(bot):
             if time_until_event <= timedelta(hours=1):
                 channel = bot.get_channel(GENERAL_CHANNEL_ID)
                 if channel:
-                    await channel.send(f"Reminder @everyone: our {next_event.name} is happening in less than an hour!")
+                    await channel.send(f"Reminder @everyone: our {next_event.name} is happening in {time_until_event} minutes!")
                 else:
                     print(f"Unable to find channel with ID: {GENERAL_CHANNEL_ID}")
             else:
